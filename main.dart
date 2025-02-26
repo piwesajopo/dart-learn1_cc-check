@@ -13,14 +13,12 @@ void main(List<String> args) {
 		} else {
 			print('NOT VALID Credit Card number!');
 		}
+	} on FormatException catch(e) {
+		print('Error: ${e.message}');
+		exit(2);
 	} catch(e) {
-		if( e is FormatException) {
-			print('Error: ${e.message}');
-                        exit(2);
-		} else {
-			print('An unexpected error occurred.');
-			exit(3);
-		}
+		print('An unexpected error occurred.');
+		exit(3);
 	}
 }
 
