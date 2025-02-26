@@ -39,5 +39,51 @@ try {
 	} else {
 		print('NOT VALID Credit Card number!');
 	}
-} 
-``` 
+}
+```
+
+## Handling Exceptions
+
+Dart's exception handling is really straightforward and similar to other languages. You use try-catch in much the same way as other languages. The general format is:
+
+```dart
+try {
+	// Code block
+} catch(e) {
+	// Handle exception e here.
+}
+```
+
+The code in this program also ilustrates the sintax for handling specific types of exceptions:
+
+```dart
+try {
+	if (ccIsValid (args[0])) {
+		print('Is a valid Credit Card number!');
+	} else {
+		print('NOT VALID Credit Card number!');
+	}
+} on FormatException catch(e) {
+	print('Error: ${e.message}');
+	exit(2);
+} catch(e) {
+	print('An unexpected error occurred.');
+	exit(3);
+}
+```
+
+In our program we use a `FormatException` when the input is not in the expected format. When an exception occurs, if the exception if of type `FormatException` the code block inside the `on FormatException catch(e)` code block will be executed.
+
+If the exception doesn't matches any individually specified type, then the `catch(e)` code block will be executed.
+
+An exception is triggered when an error occurs in your program, but you can manually generate an exception. For example we can generate a `FormatException` like this:
+
+```dart
+throw FormatException('No valid numbers found in the input.');
+```
+
+In the code above, the string used when throwing a `FormatException` can be accessed on the message variable. That's why you see code like  this in the `catch(e)` code block:
+
+```dart
+print('Error: ${e.message}');
+```
