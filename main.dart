@@ -1,8 +1,10 @@
+import 'dart:io';
+
 void main(List<String> args) {
 
 	if (args.length == 0) {
 		print('Usage: cc-check credit-card');
-		return;
+		exit(1);
 	}
 
 	try {
@@ -14,9 +16,10 @@ void main(List<String> args) {
 	} catch(e) {
 		if( e is FormatException) {
 			print('Error: ${e.message}');
+                        exit(2);
 		} else {
 			print('An unexpected error occurred.');
-			rethrow;
+			exit(3);
 		}
 	}
 }
