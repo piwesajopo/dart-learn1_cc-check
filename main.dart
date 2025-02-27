@@ -33,25 +33,24 @@ List<int> ccStrToList(String str) {
 		}
 		return number;
 	}).toList();
-	
+
 	numbers.removeWhere((element) => element == null);
 	return numbers.cast<int>();
 }
 
-bool ccIsValid(String CreditCard) {
-	var  ccNumbers = ccStrToList(CreditCard);
+bool ccIsValid(String creditCard) {
+	var  ccNumbers = ccStrToList(creditCard);
 	if (ccNumbers.isEmpty) {
 		throw FormatException('No valid numbers found in the input.');
-	} 
+	}
 	if (ccNumbers.length != 16) {
 		throw FormatException('Credit Card number must have 16 digits.');
-	} 
+	}
 
 	int sum = 0;
 	for (int i = 0; i < ccNumbers.length; i++) {
-		if (i~/2*2 == i) { // Is Even 
-			ccNumbers[i] = ccNumbers[i] * 2;
-			//ccNumbers[i] *= 2;
+		if (i%2 == 0) { // Is Even
+			ccNumbers[i] *= 2;
 			if (ccNumbers[i] > 9) {
 				// SUM first and second digit
 				ccNumbers[i] = ccNumbers[i]~/10 + ccNumbers[i]%10;
@@ -63,4 +62,3 @@ bool ccIsValid(String CreditCard) {
 	var isValid = (sum%10 == 0);
 	return isValid;
 }
-
