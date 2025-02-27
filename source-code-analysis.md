@@ -54,7 +54,7 @@ try {
 }
 ```
 
-The code in this program also ilustrates the sintax for handling specific types of exceptions:
+The code in this program also illustrates the syntax for handling specific types of exceptions:
 
 ```dart
 try {
@@ -86,4 +86,111 @@ In the code above, the string used when throwing a `FormatException` can be acce
 
 ```dart
 print('Error: ${e.message}');
+```
+
+## The ccIsValid() function
+
+The heart of this program is the function called `ccIsValid()`. This function will receive a credit card number and tell us if it's a valid one.
+
+### Function Definition
+
+Function `ccIsValid()` is defined as follows:
+
+```dart
+bool ccIsValid(String creditCard)
+```
+
+This format indicates the following:
+
+* The function name is `ccIsValid` which must start in lowercase.
+* The function returns a value of type bool. This is a built-in type and as such starts as lowercase.
+* The function receives a parameter of type `String` called `creditCard`. This is a class that is part of the Dart core library. Classes names start with a capital letter.
+* Also please note that the variable `creditCard` starts with lowercase, this is the standard for variable names.
+
+### Function Body
+
+Now let's see the code for the function:
+
+```dart
+bool ccIsValid(String creditCard) {
+	var  ccNumbers = ccStrToList(creditCard);
+	if (ccNumbers.isEmpty) {
+		throw FormatException('No valid numbers found in the input.');
+	}
+	if (ccNumbers.length != 16) {
+		throw FormatException('Credit Card number must have 16 digits.');
+	}
+
+	int sum = 0;
+	for (int i = 0; i < ccNumbers.length; i++) {
+		if (i%2 == 0) { // Is Even (i~/2*2 == i)
+			//ccNumbers[i] = ccNumbers[i] * 2;
+			ccNumbers[i] *= 2;
+			if (ccNumbers[i] > 9) {
+				// SUM first and second digit
+				ccNumbers[i] = ccNumbers[i]~/10 + ccNumbers[i]%10;
+			}
+		}
+		sum += ccNumbers[i];
+	}
+
+	var isValid = (sum%10 == 0);
+	return isValid;
+}
+```
+
+We can learn a lot from that simple function. Let's see:
+#### Variable definitions
+
+We can see several variables being defined, `sum` which is of type `int`:
+
+```dart
+// Variable declaration with explicit type
+int sum = 0;
+```
+
+In this declaration the type is explicitly expressed, but there are other ways we can do the same:
+
+```dart
+// Type is inferred by the compiler as int, since 0 is an int value.
+var sum = 0;
+```
+
+You can use whichever style you prefer. If you are sure the type is unlikely to be changed using explicit type may be better. But usually, if the variable is being initialized on the spot you, it is recommended to use `var`.
+
+#### Null Safety
+
+Dart supports Null Safety. This means the compiler will check that you don't use a variable that's not initialized. For example:
+
+```dart
+int  i;
+bool isEven;
+
+//... some code that must set i to some value ...
+
+isEven = (i%2 == 0);
+if(isEven ) {
+	print("Value of i is even")
+}
+```
+
+Unless you have some code that sets variable i to an specific value, you will get an error at compile time. If Dart didn't provide this feature, you would be able to compile and run unsafe code.
+
+Unsafe code can be a nuisance, since the error will only be evident if your program actually executes the unsafe code (which will make your program abort), leaving the programmer with the responsibility of performing rigorous checking of variables to make sure they are not null before using them, often leading to unwanted complexity of the source code.
+
+While not in the scope of this example program, there is much more to learn about Null Safety, including the support for nullable variables and the late keyword for telling the compiler to lenient about an uninitialized variable.
+
+### Dynamic variables
+
+We've seen that you can declare a variable both explicitly (using the type name), or explicitly (using the `var` keyword). If you are familiar with other languages you may assume you can use the `var` keyword when initializing the variable or object on the spot, however Dart has other use for this syntax.
+
+When you declare a variable using `var` without initializing it, it becomes a Dynamic Variable, which can change it's type over the course of the program's life:
+
+```dart
+var v; // v is a Dynamic Variable
+
+v = "Some Text"; // v is now a String
+print("v is a ${v.runtimeType} that contains: $v");
+v = 3; // v is now an int
+print("v is a ${v.runtimeType} that contains: $v");
 ```
