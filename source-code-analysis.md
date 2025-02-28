@@ -142,7 +142,7 @@ bool ccIsValid(String creditCard) {
 We can learn a lot from that simple function. Let's see:
 #### Variable definitions
 
-We can see several variables being defined, `sum` which is of type `int`:
+We can see several variables being defined, for example `sum` which is of type `int`:
 
 ```dart
 // Variable declaration with explicit type
@@ -182,7 +182,7 @@ While not in the scope of this example program, there is much more to learn abou
 
 ### Dynamic variables
 
-We've seen that you can declare a variable both explicitly (using the type name), or explicitly (using the `var` keyword). If you are familiar with other languages you may assume you can use the `var` keyword when initializing the variable or object on the spot, however Dart has other use for this syntax.
+We've seen that you can declare a variable both explicitly (using the type name), or explicitly (using the `var` keyword). If you are familiar with other languages you may assume you can only use the `var` keyword when initializing the variable or object on the spot, however Dart has other use for this syntax.
 
 When you declare a variable using `var` without initializing it, it becomes a Dynamic Variable, which can change it's type over the course of the program's life:
 
