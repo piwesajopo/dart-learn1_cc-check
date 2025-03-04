@@ -43,20 +43,25 @@ bool ccIsValid(String creditCard) {
 	if (ccNumbers.isEmpty) {
 		throw FormatException('No valid numbers found in the input.');
 	}
-	if (ccNumbers.length != 16) {
-		throw FormatException('Credit Card number must have 16 digits.');
+
+	Set<int> validLengths = {13,14,15,16,19};
+	if (!validLengths.contains(ccNumbers.length)) {
+		throw FormatException('Credit Card number has an invalid length.');
 	}
 
+	var doubleIt = false;
 	int sum = 0;
-	for (int i = 0; i < ccNumbers.length; i++) {
-		if (i%2 == 0) { // Is Even
+	for (int i = ccNumbers.length-1; i >=0; i--) {
+		if (doubleIt) {
 			ccNumbers[i] *= 2;
 			if (ccNumbers[i] > 9) {
 				// SUM first and second digit
-				ccNumbers[i] = ccNumbers[i]~/10 + ccNumbers[i]%10;
+				// ccNumbers[i] = ccNumbers[i]~/10 + ccNumbers[i]%10;
+				ccNumbers[i] -= 9; // Equivalent to the sum of the digits
 			}
 		}
 		sum += ccNumbers[i];
+		doubleIt = !doubleIt; // Double the value each 2nd digits
 	}
 
 	var isValid = (sum%10 == 0);
