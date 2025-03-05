@@ -303,7 +303,7 @@ O esto:
 
 ```dart
 // Una buena alternativa en otros lenguajes
-if (ccNumbers.length<=13 || ccNumbers.length>=16) && ccNumbers.length!=19) {
+if ((ccNumbers.length<=13 || ccNumbers.length>=16) && ccNumbers.length!=19) {
     throw FormatException('El número de tarjeta de crédito tiene una longitud no válida.');
 }
 ```

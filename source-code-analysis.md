@@ -314,7 +314,7 @@ Or this:
 
 ```dart
 // A good alternative on other languages
-if (ccNumbers.length<=13 || ccNumbers.length>=16) && ccNumbers.length!=19) {
+if ((ccNumbers.length<=13 || ccNumbers.length>=16) && ccNumbers.length!=19) {
 	throw FormatException('Credit Card number has an invalid length.');
 }
 ```
