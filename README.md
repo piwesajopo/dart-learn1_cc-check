@@ -32,3 +32,11 @@ dart main.dart 8391-6343-9583-5933
 dart main.dart 9023-5848-0715-6366
 dart main.dart 7612-1237-0360-8096
 ```
+
+## Understanding the code.
+
+Since these are example programs and this is intended for beginner programmers,
+I've decided to include detailed explanations of the language features used in this example:
+
+* [**English Source Code Analisis**](https://github.com/piwesajopo/dart-learn1_cc-check/blob/main/source-code-analysis.md)
+* [**Spanish Source Code Analisis**](https://github.com/piwesajopo/dart-learn1_cc-check/blob/main/source-code-analysis.es.md)
