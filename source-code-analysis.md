@@ -161,7 +161,7 @@ In this declaration the type is explicitly expressed, but there are other ways w
 var sum = 0;
 ```
 
-You can use whichever style you prefer. If you are sure the type is unlikely to be changed using explicit type may be better. But usually, if the variable is being initialized on the spot you, it is recommended to use `var`.
+You can use whichever style you prefer. If you are sure the type is unlikely to be changed in a future version of your program, using explicit type may be better. But usually, if the variable is being initialized on the spot you, it is recommended to use `var`.
 
 #### Null Safety
 
@@ -214,7 +214,7 @@ We normally use var to define objects that are initialized on the spot, but sinc
 List<int> ccNumbers = ccStrToList(creditCard);
 ```
 
-In this code we define a `List<int>` variable called `ccNumber`. It will contain a list of numbers (int values). As you can see this list is created by calling another function called `ccStrToList()` which receives a String. We will see how `ccStrToList()` works, but for now we can learn three things from this line.
+In this code we define a `List<int>` variable called `ccNumber`. It will contain a list of numbers (int values). As you can see this list is created by calling another function called `ccStrToList()` which receives a String. We will see later how `ccStrToList()` works, but for now we can learn three things from this line.
 
 * While we can do some tasks directly in `ccIsValid()`, if it seems likely that we would later want to perform that task elsewhere, a good practice is to put the code in another function. In this case, we might want to convert strings of numbers into a `List<int>` so, we created `ccStrToList()` as a separate function. Also, even if the task will only be performed inside `ccIsValid()` like in this case, it makes the code cleaner and easier to understand.
 
@@ -242,7 +242,7 @@ As you can see, objects can contain several bits of data. This data could be som
 
 #### Indexing a `List <T>`
 
-`List<T>` is not just any generic object, it's an _indexable, ordered collection_. For now we will just say List is a very rich object that leverages several language features like _abstract objects, interfaces, and operator overloading (for indexing using brackets)_.
+`List<T>` is not just a generic object, it's an _indexable, ordered collection_. For now we will just say List is a very rich object that leverages several language features like _abstract classes, generics, interfaces, and operator overloading (for indexing using brackets)_.
 
 In the scope of this example we will just use ccNumbers as we would use an array in other languages, by indexing the list. For example we can access the first element of ccNumbers like this:
 

@@ -157,7 +157,7 @@ En esta declaración, el tipo se expresa explícitamente, pero hay otras formas 
 var sum = 0;
 ```
 
-Puedes usar el estilo que prefieras. Si estás seguro de que el tipo es poco probable que cambie, usar el tipo explícito puede ser mejor. Pero generalmente, si la variable se está inicializando en el acto, se recomienda usar `var`.
+Puedes usar el estilo que prefieras. Si estás seguro de que el tipo es poco probable que cambie en una version posterior de tu programa, usar el tipo explícito puede ser mejor. Pero generalmente, si la variable se está inicializando en el acto, se recomienda usar `var`.
 
 #### Seguridad de Nulos (Null Safety)
 
@@ -207,7 +207,7 @@ Normalmente usamos var para definir objetos que se inicializan en el acto, pero 
 List<int> ccNumbers = ccStrToList(creditCard);
 ```
 
-En este código definimos una variable `List<int>` llamada `ccNumber`. Contendrá una lista de números (valores int). Como puedes ver, esta lista se crea llamando a otra función llamada `ccStrToList()` que recibe una String. Veremos cómo funciona `ccStrToList()`, pero por ahora podemos aprender tres cosas de esta línea.
+En este código definimos una variable `List<int>` llamada `ccNumber`. Contendrá una lista de números (valores int). Como puedes ver, esta lista se crea llamando a otra función llamada `ccStrToList()` que recibe una String. Luego veremos cómo funciona `ccStrToList()`, pero por ahora podemos aprender tres cosas de esta línea.
 
 - Aunque podemos hacer algunas tareas directamente en `ccIsValid()`, si parece probable que más tarde queramos realizar esa tarea en otro lugar, una buena práctica es poner el código en otra función. En este caso, podríamos querer convertir cadenas de números en una `List<int>`, por lo que creamos `ccStrToList()` como una función separada. Además, incluso si la tarea solo se realizará dentro de `ccIsValid()` como en este caso, hace que el código sea más limpio y fácil de entender.
 - ccNumbers no es solo una variable. Estamos usando lo que comúnmente se llama un _objeto_. Que es una variable que no solo contiene datos, sino también código que podemos llamar para hacer cosas con los datos.
@@ -232,7 +232,7 @@ Como puedes ver, los objetos pueden contener diferentes datos. Estos datos podr�
 
 #### Indexación de una `List<T>`
 
-`List<T>` no es solo cualquier objeto genérico, es una _colección ordenada e indexable_. Por ahora solo diremos que List es un objeto muy util que aprovecha varias características del lenguaje como _objetos abstractos, interfaces y sobrecarga de operadores (para indexación usando corchetes)_.
+`List<T>` no es solo un objeto genérico, es una _colección ordenada e indexable_. Por ahora solo diremos que List es un objeto muy util que aprovecha varias características del lenguaje como _clases genéricas, clases abstractas, interfaces y sobrecarga de operadores (para indexación usando corchetes)_.
 
 En el alcance de este ejemplo, usaremos `ccNumbers` como usaríamos una matriz en otros lenguajes, indexando la lista. Por ejemplo, podemos acceder al primer elemento de `ccNumbers` así:
 
@@ -257,7 +257,7 @@ Si estás familiarizado con otros lenguajes, probablemente estés familiarizado 
 var firstFourPrimes = [2,3,5,7];
 ```
 
-La razón para no tener un tipo de matriz en Dart es que uno de los principios fundamentales del lenguaje es proporcionar _Flexibilidad y Simplicidad_. El objeto `List<T>`está diseñado para realizar todas las tareas que necesitarías para una matriz, mientras usas la misma sintaxis y permitiendo operaciones adicionales. Además, el compilador es lo suficientemente inteligente como para crear código eficiente tan bueno como otros compiladores generan al usar matrices nativas.
+La razón por la que no existe un tipo de matriz en Dart es que uno de los principios fundamentales del lenguaje es proporcionar _Flexibilidad y Simplicidad_. El objeto `List<T>`está diseñado para realizar todas las tareas que necesitarías para una matriz, mientras usas la misma sintaxis y permitiendo operaciones adicionales. Además, el compilador es lo suficientemente inteligente como para crear código eficiente tan bueno como otros compiladores generan al usar matrices nativas.
 
 ### Listas vs Conjuntos
 
