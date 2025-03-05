@@ -113,33 +113,38 @@ Now let's see the code for the function:
 
 ```dart
 bool ccIsValid(String creditCard) {
-	var  ccNumbers = ccStrToList(creditCard);
-	if (ccNumbers.isEmpty) {
-		throw FormatException('No valid numbers found in the input.');
-	}
-	if (ccNumbers.length != 16) {
-		throw FormatException('Credit Card number must have 16 digits.');
-	}
+    var  ccNumbers = ccStrToList(creditCard);
+    if (ccNumbers.isEmpty) {
+        throw FormatException('No valid numbers found in the input.');
+    }
 
-	int sum = 0;
-	for (int i = 0; i < ccNumbers.length; i++) {
-		if (i%2 == 0) { // Is Even (i~/2*2 == i)
-			//ccNumbers[i] = ccNumbers[i] * 2;
-			ccNumbers[i] *= 2;
-			if (ccNumbers[i] > 9) {
-				// SUM first and second digit
-				ccNumbers[i] = ccNumbers[i]~/10 + ccNumbers[i]%10;
-			}
-		}
-		sum += ccNumbers[i];
-	}
+    Set<int> validLengths = {13,14,15,16,19};
+    if (!validLengths.contains(ccNumbers.length)) {
+        throw FormatException('Credit Card number has an invalid length.');
+    }
 
-	var isValid = (sum%10 == 0);
-	return isValid;
+    var doubleIt = false;
+    int sum = 0;
+    for (int i = ccNumbers.length-1; i >=0; i--) {
+        if (doubleIt) {
+            ccNumbers[i] *= 2;
+            if (ccNumbers[i] > 9) {
+                // SUM first and second digit
+                // ccNumbers[i] = ccNumbers[i]~/10 + ccNumbers[i]%10;
+                ccNumbers[i] -= 9; // Equivalent to the sum of the digits
+            }
+        }
+        sum += ccNumbers[i];
+        doubleIt = !doubleIt; // Double the value each 2nd digits
+    }
+
+    var isValid = (sum%10 == 0);
+    return isValid;
 }
 ```
 
 We can learn a lot from that simple function. Let's see:
+
 #### Variable definitions
 
 We can see several variables being defined, for example `sum` which is of type `int`:
@@ -182,7 +187,7 @@ While not in the scope of this example program, there is much more to learn abou
 
 ### Dynamic variables
 
-We've seen that you can declare a variable both explicitly (using the type name), or explicitly (using the `var` keyword). If you are familiar with other languages you may assume you can only use the `var` keyword when initializing the variable or object on the spot, however Dart has other use for this syntax.
+We've seen that you can declare a variable both explicitly (using the type name), or implicitly (using the `var` keyword). If you are familiar with other languages you may assume you can only use the `var` keyword when initializing the variable or object on the spot, however Dart has other use for this syntax.
 
 When you declare a variable using `var` without initializing it, it becomes a Dynamic Variable, which can change it's type over the course of the program's life:
 
@@ -194,3 +199,140 @@ print("v is a ${v.runtimeType} that contains: $v");
 v = 3; // v is now an int
 print("v is a ${v.runtimeType} that contains: $v");
 ```
+
+### The `List<T>` object
+
+The first line of `ccIsValid()` is as follows:
+
+```dart
+var ccNumbers = ccStrToList(creditCard);
+```
+
+We normally use var to define objects that are initialized on the spot, but since ccStrToList() returns `List<int>` we could also define ccNumber as:
+
+```dart
+List<int> ccNumbers = ccStrToList(creditCard);
+```
+
+In this code we define a `List<int>` variable called `ccNumber`. It will contain a list of numbers (int values). As you can see this list is created by calling another function called `ccStrToList()` which receives a String. We will see how `ccStrToList()` works, but for now we can learn three things from this line.
+
+* While we can do some tasks directly in `ccIsValid()`, if it seems likely that we would later want to perform that task elsewhere, a good practice is to put the code in another function. In this case, we might want to convert strings of numbers into a `List<int>` so, we created `ccStrToList()` as a separate function. Also, even if the task will only be performed inside `ccIsValid()` like in this case, it makes the code cleaner and easier to understand.
+
+* ccNumbers is not just a variable. We are using what is commonly called an _object_. Which is a variable that not only contains data, but also code that we can call to make things with the data.
+
+* `List<int>` is not just an object, is a special type of object called a _generic_. This means the part between `<` and  `>` can be any type we wish, in this case an `int`.
+
+#### Properties of `List<T>`:
+
+We said objects contain data, we call each specific type of data inside an object a `property`. Let's see how we use some of those properties:
+
+```dart
+if (ccNumbers.isEmpty) {
+  //...
+}
+
+if (ccNumbers.length != 16) {
+//...
+}
+```
+
+In the code above, we are checking properties like `isEmpty` and `lenght`. As their name implies, `isEmpty` is a boolean that contains weather the list is empty or not, and `lenght` is an int that contains the length of the list.
+
+As you can see, objects can contain several bits of data. This data could be some information you want about the object as we just saw. You made a list of numbers; this data was loaded into the object, but you also could request information about that list, like how many numbers are in it.
+
+#### Indexing a `List <T>`
+
+`List<T>` is not just any generic object, it's an _indexable, ordered collection_. For now we will just say List is a very rich object that leverages several language features like _abstract objects, interfaces, and operator overloading (for indexing using brackets)_.
+
+In the scope of this example we will just use ccNumbers as we would use an array in other languages, by indexing the list. For example we can access the first element of ccNumbers like this:
+
+```dart
+var ccNumbers = ccStrToList(creditCard);
+var firstNumber = ccNumbers[0];
+print("The first number is $firstNumber");
+```
+
+Or the last:
+
+```dart
+var ccNumbers = ccStrToList(creditCard);
+var lastNumber = ccNumbers[ccNumbers.lenght-1;
+print("The first number is $lastNumber");
+```
+
+If you are familiar with other languages you are probably familiar with the concept of _arrays_. Turns out that there's no native array support in dart. When you initialize an object with _list literals_, the compiler will generate a `List<T>` object:
+
+```dart
+// This is a List<int> object
+var firstFourPrimes = [2,3,5,7];
+```
+
+The reason for not having an array type on Dart is that one of the core principles of the language is to provide _Flexibility and Simplicity_. The `List<T>` object is designed so it performs all the task you would need an array for, while using the same syntax and allowing additional operations. Also the compiler is smart enough to create efficient code as good as other compilers generate when using native arrays.
+
+
+### Lists vs Sets
+
+Look at the following line of code:
+
+```dart
+var validLengths = {13,14,15,16,19};
+```
+
+It is very similar to how we initialize a `List<T>` object. But we are using curly brackets instead of square ones. This sintax is used when we want to create a `Set<T>` object instead of a List, it is thus equivalent to:
+
+```dart
+Set<int> validLengths = {13,14,15,16,19};
+```
+
+A Set object is similar to a List object, but the elements can't be repeated. If you add the same item several times, it will not be inserted more than once.
+
+In the ccIsValid() function, we use a set to check the length of the `ccNumbers` List. We want to see if the length is not inside the set and give an error. That is to say, we want only to allow these specific lengths:
+
+```dart
+Set<int> validLengths = {13,14,15,16,19};
+if (!validLengths.contains(ccNumbers.length)) {
+	throw FormatException('Credit Card number has an invalid length.');
+}
+```
+
+We could very well do this instead:
+
+```dart
+// Clumsier and Slower
+if (
+	ccNumbers.length != 13 &&
+	ccNumbers.length != 14 &&
+	ccNumbers.length != 15 &&
+	ccNumbers.length != 16 &&
+	ccNumbers.length != 19
+) {
+	throw FormatException('Credit Card number has an invalid length.');
+}
+```
+
+Or this:
+
+```dart
+// A good alternative on other languages
+if (ccNumbers.length<=13 || ccNumbers.length>=16) && ccNumbers.length!=19) {
+	throw FormatException('Credit Card number has an invalid length.');
+}
+```
+
+We used a Set in this example not just to show how sets are used, but also because is a more efficient way to perform the task. The code also looks cleaner:
+
+```dart
+if (!validLengths.contains(ccNumbers.length)) {
+// ....
+}
+```
+
+Here we see the expression `validLengths.contains(ccNumbers.length)`. We previously said that objects are variables that not only contain data, but algo allows you to do things with them, like we are now doing by asking the object if it contains an specific element. For this we call a method of the object which in this case is called `contains()`. We pass information to the method just like we do when calling functions, with parameters.
+
+In this case we are asking if the length of the List ccNumbers, is one of the numbers contained in the set. We then apply the `!` operator to the question which means "not" so the full expression inside the if is:
+
+```dart
+!validLengths.contains(ccNumbers.length)
+```
+
+Which can be read as "Is the length of ccNumbers not part of the set `validLengths`?". When we use this expression inside the `if` sentence the program will execute the specified code only if the expression is true.

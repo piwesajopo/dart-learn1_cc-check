@@ -10,7 +10,7 @@ void main(List<string> args) {
 }
 ```
 
-Notarás que `main()` tiene un tipo de retorno void. Los programas de línea de comandos siempre devuelven un código de resultado, y en muchos lenguajes, `main()` especificará un valor de retorno de tipo `int`. Dart es diferente, no se hace un `return` al final del programa. Los programas terminarán con el código de salida 0 a menos que llames a la función `exit()` con otro valor.
+Notarás que `main()` tiene un tipo de retorno void. Los programas de línea de comandos siempre devuelven un código de resultado, y en muchos lenguajes, `main()` especificará un valor de retorno de tipo `int`. Dart es diferente, no se hace un `return` al final del programa. Los programas terminarán con el código de salida 0 a menos que llames a la función `exit()` con otro valor.
 
 Cuando defines `main` de esta manera, los parámetros de entrada se recibirán en la variable `args`, que es de tipo `List<string>`. Esto facilita validar cuántos parámetros recibiste, así como acceder a los parámetros individualmente. Veremos cómo se hace esto en la siguiente sección.
 
@@ -81,7 +81,7 @@ Se desencadena una excepción cuando ocurre un error en tu programa, pero puedes
 throw FormatException('No se encontraron números válidos en la entrada.');
 ```
 
-En el código anterior, la cadena utilizada al lanzar una `FormatException` se puede acceder en la variable de mensaje. Es por eso que ves código como este en el bloque de código `catch(e)`:
+En el código anterior, la cadena utilizada al lanzar una `FormatException` se puede acceder en la variable message. Es por eso que ves código como este en el bloque de código `catch(e)`:
 
 ```dart
 print('Error: ${e.message}');
@@ -116,20 +116,23 @@ bool ccIsValid(String creditCard) {
     if (ccNumbers.isEmpty) {
         throw FormatException('No se encontraron números válidos en la entrada.');
     }
-    if (ccNumbers.length != 16) {
-        throw FormatException('El número de tarjeta de crédito debe tener 16 dígitos.');
+    Set<int> validLengths = {13,14,15,16,19};
+    if (!validLengths.contains(ccNumbers.length)) {
+        throw FormatException('El número de tarjeta de crédito tiene una longitud no válida.');
     }
+    var doubleIt = false;
     int sum = 0;
-    for (int i = 0; i < ccNumbers.length; i++) {
-        if (i%2 == 0) { // Es Par (i~/2*2 == i)
-            //ccNumbers[i] = ccNumbers[i] * 2;
+    for (int i = ccNumbers.length-1; i >=0; i--) {
+        if (doubleIt) {
             ccNumbers[i] *= 2;
             if (ccNumbers[i] > 9) {
                 // SUMA el primer y segundo dígito
-                ccNumbers[i] = ccNumbers[i]~/10 + ccNumbers[i]%10;
+                // ccNumbers[i] = ccNumbers[i]~/10 + ccNumbers[i]%10;
+                ccNumbers[i] -= 9; // Equivalente a la suma de los dígitos
             }
         }
         sum += ccNumbers[i];
+        doubleIt = !doubleIt; // Duplica el valor de cada 2º dígito
     }
     var isValid = (sum%10 == 0);
     return isValid;
@@ -166,19 +169,19 @@ bool isEven;
 //... algún código que debe establecer i en algún valor ...
 isEven = (i%2 == 0);
 if(isEven) {
-    print("El valor de i es par")
+    print("El valor de i es par");
 }
 ```
 
 A menos que tengas algún código que establezca la variable i en un valor específico, obtendrás un error en tiempo de compilación. Si Dart no proporcionara esta característica, podrías compilar y ejecutar código inseguro.
 
-El código inseguro puede ser una molestia, ya que el error solo será evidente si tu programa realmente ejecuta el código inseguro (lo que hará que tu programa se aborte), dejando al programador con la responsabilidad de realizar una verificación rigurosa de las variables para asegurarse de que no sean nulas antes de usarlas, lo que a menudo lleva a una complejidad no deseada del código fuente.
+El código inseguro puede ser una molestia, ya que el error solo será evidente si tu programa realmente ejecuta el código inseguro (lo que hará que tu programa aborte), dejando al programador con la responsabilidad de realizar una verificación rigurosa de las variables para asegurarse de que no sean nulas antes de usarlas, a menudo llevando a una complejidad no deseada del código fuente.
 
-Aunque este fuera  del alcance de este programa de ejemplo, hay mucho más que aprender sobre la Seguridad de Nulos, incluyendo el soporte para variables anulables (nullable variables) y la palabra clave late para decirle al compilador que sea indulgente con una variable no inicializada.
+Aunque no estaremos abundando mas sobre ello aquí, hay mucho más que aprender sobre la Seguridad de Nulos, incluyendo el soporte para variables anulables y la palabra clave late para decirle al compilador que sea indulgente con una variable no inicializada.
 
 ### Variables Dinámicas
 
-Hemos visto que puedes declarar una variable tanto explícitamente (usando el nombre del tipo), como explícitamente (usando la palabra clave `var`). Si estás familiarizado con otros lenguajes, puedes asumir que solo puedes usar la palabra clave `var` al inicializar la variable u objeto al momento de definirla, sin embargo Dart tiene otro uso para esta sintaxis.
+Hemos visto que puedes declarar una variable tanto explícitamente (usando el nombre del tipo), como implícitamente (usando la palabra clave `var`). Si estás familiarizado con otros lenguajes, puedes asumir que solo puedes usar la palabra clave `var` al inicializar la variable u objeto en el acto, sin embargo, Dart tiene otro uso para esta sintaxis.
 
 Cuando declaras una variable usando `var` sin inicializarla, se convierte en una Variable Dinámica, que puede cambiar su tipo a lo largo de la vida del programa:
 
@@ -189,4 +192,137 @@ print("v es un ${v.runtimeType} que contiene: $v");
 v = 3; // v ahora es un int
 print("v es un ${v.runtimeType} que contiene: $v");
 ```
+
+### El objeto `List<T>`
+
+La primera línea de `ccIsValid()` es la siguiente:
+
+```dart
+var ccNumbers = ccStrToList(creditCard);
+```
+
+Normalmente usamos var para definir objetos que se inicializan en el acto, pero como `ccStrToList()` devuelve `List<int>`, también podríamos definir `ccNumber` como:
+
+```dart
+List<int> ccNumbers = ccStrToList(creditCard);
+```
+
+En este código definimos una variable `List<int>` llamada `ccNumber`. Contendrá una lista de números (valores int). Como puedes ver, esta lista se crea llamando a otra función llamada `ccStrToList()` que recibe una String. Veremos cómo funciona `ccStrToList()`, pero por ahora podemos aprender tres cosas de esta línea.
+
+- Aunque podemos hacer algunas tareas directamente en `ccIsValid()`, si parece probable que más tarde queramos realizar esa tarea en otro lugar, una buena práctica es poner el código en otra función. En este caso, podríamos querer convertir cadenas de números en una `List<int>`, por lo que creamos `ccStrToList()` como una función separada. Además, incluso si la tarea solo se realizará dentro de `ccIsValid()` como en este caso, hace que el código sea más limpio y fácil de entender.
+- ccNumbers no es solo una variable. Estamos usando lo que comúnmente se llama un _objeto_. Que es una variable que no solo contiene datos, sino también código que podemos llamar para hacer cosas con los datos.
+- `List<int>` no es solo un objeto, es un tipo especial de objeto llamado _genérico_. Esto significa que la parte entre `<` y `>` puede ser cualquier tipo que deseemos, en este caso un `int`.
+
+#### Propiedades de `List<T>`:
+
+Dijimos que los objetos contienen datos, llamamos a cada tipo específico de datos dentro de un objeto una `propiedad`. Veamos cómo usamos algunas de esas propiedades:
+
+```dart
+if (ccNumbers.isEmpty) {
+  //...
+}
+if (ccNumbers.length != 16) {
+//...
+}
+```
+
+En el código anterior, estamos verificando propiedades como `isEmpty` y `length`. Como su nombre lo indica, `isEmpty` es un booleano que contiene si la lista está vacía o no, y `length` es un int que contiene la longitud de la lista.
+
+Como puedes ver, los objetos pueden contener diferentes datos. Estos datos podrían ser alguna información que desees sobre el objeto, como acabamos de ver. Hiciste una lista de números; estos datos se cargaron en el objeto, pero también podrías solicitar información sobre esa lista, como cuántos números hay en ella.
+
+#### Indexación de una `List<T>`
+
+`List<T>` no es solo cualquier objeto genérico, es una _colección ordenada e indexable_. Por ahora solo diremos que List es un objeto muy util que aprovecha varias características del lenguaje como _objetos abstractos, interfaces y sobrecarga de operadores (para indexación usando corchetes)_.
+
+En el alcance de este ejemplo, usaremos `ccNumbers` como usaríamos una matriz en otros lenguajes, indexando la lista. Por ejemplo, podemos acceder al primer elemento de `ccNumbers` así:
+
+```dart
+var ccNumbers = ccStrToList(creditCard);
+var firstNumber = ccNumbers[0];
+print("El primer número es $firstNumber");
+```
+
+O el último:
+
+```dart
+var ccNumbers = ccStrToList(creditCard);
+var lastNumber = ccNumbers[ccNumbers.length-1];
+print("El último número es $lastNumber");
+```
+
+Si estás familiarizado con otros lenguajes, probablemente estés familiarizado con el concepto de _matrices_. Resulta que no hay soporte nativo de matrices en Dart. Cuando inicializas un objeto con _literales de lista_, el compilador generará un objeto `List<T>`:
+
+```dart
+// Esto es un objeto List<int>
+var firstFourPrimes = [2,3,5,7];
+```
+
+La razón para no tener un tipo de matriz en Dart es que uno de los principios fundamentales del lenguaje es proporcionar _Flexibilidad y Simplicidad_. El objeto `List<T>`está diseñado para realizar todas las tareas que necesitarías para una matriz, mientras usas la misma sintaxis y permitiendo operaciones adicionales. Además, el compilador es lo suficientemente inteligente como para crear código eficiente tan bueno como otros compiladores generan al usar matrices nativas.
+
+### Listas vs Conjuntos
+
+Mira la siguiente línea de código:
+
+```dart
+var validLengths = {13,14,15,16,19};
+```
+
+Es muy similar a cómo inicializamos un objeto `List<T>`. Pero estamos usando llaves en lugar de corchetes. Esta sintaxis se usa cuando queremos crear un objeto `Set<T>` en lugar de una Lista, por lo tanto, es equivalente a:
+
+```dart
+Set<int> validLengths = {13,14,15,16,19};
+```
+
+Un objeto Set es similar a un objeto List, pero los elementos no pueden repetirse. Si agregas el mismo elemento varias veces, no se insertará más de una vez.
+
+En la función `ccIsValid()`, usamos un conjunto para verificar la longitud de la lista `ccNumbers`. Queremos ver si la longitud no está dentro del conjunto y dar un error. Es decir, solo queremos permitir estas longitudes específicas:
+
+```dart
+Set<int> validLengths = {13,14,15,16,19};
+if (!validLengths.contains(ccNumbers.length)) {
+    throw FormatException('El número de tarjeta de crédito tiene una longitud no válida.');
+}
+```
+
+Podríamos hacer esto en su lugar:
+
+```dart
+// Más torpe y más lento
+if (
+    ccNumbers.length != 13 &&
+    ccNumbers.length != 14 &&
+    ccNumbers.length != 15 &&
+    ccNumbers.length != 16 &&
+    ccNumbers.length != 19
+) {
+    throw FormatException('El número de tarjeta de crédito tiene una longitud no válida.');
+}
+```
+
+O esto:
+
+```dart
+// Una buena alternativa en otros lenguajes
+if (ccNumbers.length<=13 || ccNumbers.length>=16) && ccNumbers.length!=19) {
+    throw FormatException('El número de tarjeta de crédito tiene una longitud no válida.');
+}
+```
+
+Usamos un conjunto en este ejemplo no solo para mostrar cómo se usan los conjuntos, sino también porque es una forma más eficiente de realizar la tarea. El código también se ve más limpio:
+
+```dart
+if (!validLengths.contains(ccNumbers.length)) {
+// ....
+}
+```
+
+Aquí vemos la expresión `validLengths.contains(ccNumbers.length)`. Anteriormente dijimos que los objetos son variables que no solo contienen datos, sino que también te permiten hacer cosas con ellos, como estamos haciendo ahora al preguntar al objeto si contiene un elemento específico. Para esto llamamos a un método del objeto que en este caso se llama `contains()`. Pasamos información al método como lo hacemos al llamar a funciones, con parámetros.
+
+En este caso, estamos preguntando si la longitud de la lista `ccNumbers` es uno de los números contenidos en el conjunto. Luego aplicamos el operador `!` a la pregunta, lo que significa "no", por lo que la expresión completa dentro del if es:
+
+```dart
+!validLengths.contains(ccNumbers.length)
+```
+
+Lo que se puede leer como "¿La longitud de `ccNumbers` no es parte del conjunto `validLengths`?". Cuando usamos esta expresión dentro de la sentencia `if`, el programa ejecutará el código especificado solo si la expresión es verdadera.
 
