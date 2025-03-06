@@ -336,3 +336,118 @@ In this case we are asking if the length of the List ccNumbers, is one of the nu
 ```
 
 Which can be read as "Is the length of ccNumbers not part of the set `validLengths`?". When we use this expression inside the `if` sentence the program will execute the specified code only if the expression is true.
+
+### Loops in Dart
+
+For implementing steps 1 and 2 of Luhn's algorithm it is evident we will have to perform these task for each digit of the credit card number. Programming languages are designed to allow repeated execution of code for an arbitrary number of times. These constructs are called `loops` and languages usually have several forms of them.
+
+We used a `for` loop in our example. Traditional `for` loops are not often used in Dart, and specially very rarely used in Flutter's code, however in this case there's a slight advantage in using `for` instead of a more typical loop (like `foreach`). This will be covered quickly later in this section.
+
+In this case we want to check each digit of the `ccNumber` which is `List<int>` object, starting from the last element. Since elements of a `List` are indexed from the position number 0, the last position will be `ccNumber.Length-1`, thus the `for` loop will look like this:
+
+```dart
+for (int i = ccNumbers.length-1; i >=0; i--) {
+    // Code to be performed N times
+}
+```
+
+This statement tells the compiler to generate a code that does the following:
+
+1. Assign the value `ccNumbers.length-1` to variable `i`: This is the first step and is executed once. Please notice we also define the `i` variable in this part. The reason for this is we want `i` to exist only inside the `for` statement code block.
+2. Execute the code block between `{` and `}`.
+3. Check expression  `i >= 0`; if false the loop ends.
+4. Reduce the value of i by 1 (expression `i--`), then return to step 2.
+#### Steps 1 and 2 of Luhn's Algorithm
+
+Here is the code of the `for`loop for steps 1 and 2:
+
+```dart
+var doubleIt = false;
+int sum = 0;
+for (int i = ccNumbers.length-1; i >=0; i--) {
+    if (doubleIt) {
+        ccNumbers[i] *= 2;
+        if (ccNumbers[i] > 9) {
+            // SUM first and second digit
+            // ccNumbers[i] = ccNumbers[i]~/10 + ccNumbers[i]%10;
+            ccNumbers[i] -= 9; // Equivalent to the sum of the digits
+        }
+    }
+    sum += ccNumbers[i];
+    doubleIt = !doubleIt; // Double the value each 2nd digits
+}
+```
+
+As we said before this code block will be repeated with the value i going from N-1 to 0, which means the loop will be repeated N times where `N = ccNumbers.length`.
+
+The first thing inside the loop is checking the value of variable `doubleIt`, which purpose is to know if we should multiply by 2 the value of the current digit being analyzed:
+
+```dart
+var doubleIt = false;
+// Begins for Loop...
+if (doubleIt) {
+    // Executed only if doubleIt = true
+    //...
+}
+doubleIt = !doubleIt;
+// Ends for Loop
+```
+
+We see that before the loop starts, we declare variable `doubleIt` and initialize it to  `false` (which means doubleIt if of type `bool`). Because this, the first time we execute the loop the value will be `false` and the `if` statement will not be executed.
+
+Notice now, that at the end of the code block of the for statement we use the `!` (logical not) operator in the statement `doubleIt = !doubleIt`, which inverts the truth value of `doubleIt` (if it was false it becomes true, and viceversa).  This means that the second iteration of the loop, the value of `doubleIt` will be `true`.
+
+This will be repeated each iteration, effectively making the variable doubleIt `true` for each 2 digits we analyze in the loop. We use this to perform the operation described in the second step of Luhn's Algorithm that corresponds to the following code:
+
+```dart
+// - Double the value of every second digit.
+// - If doubling of a number results in a two digit number (i.e. greater than 9),
+// then add the digits of the product to get a single digit number.
+if (doubleIt) {
+        ccNumbers[i] *= 2;
+        if (ccNumbers[i] > 9) {
+            // SUM first and second digit
+            // ccNumbers[i] = ccNumbers[i]~/10 + ccNumbers[i]%10;
+            ccNumbers[i] -= 9; // Equivalent to the sum of the digits
+        }
+    }
+```
+
+Please notice that we multiply ccNumbers[i] by 2 as follows:
+
+```dart
+// Multiply ccNumbers[i] by 2 and assign the result to itself.
+// Instead of using:
+//   ccNumbers[i] = ccNumbers[i] * 2
+// We use the shorthand version:
+ccNumbers[i] *= 2;
+```
+
+For checking if the result has more than one digit we just check if the value is greater than 9. And if it is, then we add the digits in a very peculiar way:
+
+```dart
+// Since ccNumbers[i] was originally 1 single digit,
+// the multiplication would never be greater than 18.
+// So adding the digits would normally be achieved by:
+//     Adding N/10 (the first digit)
+//     to N mod 10 (the second digit)
+// That is:
+//     ccNumbers[i] = ccNumbers[i] ~/10 + ccNumbers[i]%10;
+
+// However instead of two CPU expensive operations,
+// we could just do N-9 an obtain the same result:
+//     ccNumbers[i] = ccNumbers[i] - 9;
+// Or preferably:
+ccNumbers[i] -= 9;
+```
+
+As you can see, programming in an optimal way can be tricky. While in this example it is very little to be gained by these optimizations, on more complex programs used by millions of people simultaneously optimizations can have a big impact.
+
+Lastly, please notice we use the variable sum to store the sum of the values:
+
+```dart
+int sum = 0; // sum needs to start with a value 0
+// Begins for loop
+sum += ccNumbers[i]; // Shorthand for sum = sum + ccNumbers[i]
+// Ends for loop
+```
